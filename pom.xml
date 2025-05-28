@@ -14,18 +14,44 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.22.2</version> <!-- Or a more recent version -->
+        <configuration>
+          <systemPropertyVariables>
+            <!-- Allow overriding cucumber options via command line -->
+            <!-- Example: mvn test -Dcucumber.options="-Dcucumber.features=src/main/java/featurefiles/your.feature -Dcucumber.tags=@YourTag" -->
+            <cucumber.options>${cucumber.options}</cucumber.options>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
    <dependency>
 			<groupId>info.cukes</groupId>
 			<artifactId>cucumber-java</artifactId>
 			<version>1.2.5</version>
-			<scope>test</scope>
+			<!-- <scope>test</scope> removed for main compilation -->
 		</dependency>
 
 		<dependency>
 			<groupId>info.cukes</groupId>
 			<artifactId>cucumber-jvm</artifactId>
-			<version>1.2.5</version>
+			<version>1.2.5</version> 
 			<type>pom</type>
 		</dependency>
 
@@ -33,7 +59,7 @@
 			<groupId>info.cukes</groupId>
 			<artifactId>cucumber-junit</artifactId>
 			<version>1.2.5</version>
-			<scope>test</scope>
+			<!-- <scope>test</scope> removed for main compilation -->
 		</dependency>
 
 		<dependency>
@@ -57,8 +83,8 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
+			<version>4.12</version> <!-- Updated JUnit version -->
+			<!-- <scope>test</scope> removed for main compilation -->
 		</dependency>
 
 
@@ -66,7 +92,7 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
-			<version>3.5.3</version>
+			<version>3.141.59</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/info.cukes/cucumber-picocontainer -->
@@ -74,7 +100,7 @@
 			<groupId>info.cukes</groupId>
 			<artifactId>cucumber-picocontainer</artifactId>
 			<version>1.2.5</version>
-			<scope>test</scope>
+			<!-- <scope>test</scope> removed for main compilation -->
 		</dependency>
 		<dependency>
 			<groupId>com.vimalselvam</groupId>
@@ -84,7 +110,34 @@
 		<dependency>
 			<groupId>com.aventstack</groupId>
 			<artifactId>extentreports</artifactId>
-			<version>3.1.2</version>
+			<version>3.1.5</version>
+		</dependency>
+		<dependency>
+			<groupId>io.github.bonigarcia</groupId>
+			<artifactId>webdrivermanager</artifactId>
+			<version>5.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.15.1</version>
 		</dependency>
   </dependencies>
+
+  <!--
+  To run specific feature files:
+  mvn test -Dcucumber.options="-Dcucumber.features=src/main/java/featurefiles/your_specific.feature"
+
+  To run specific tags:
+  mvn test -Dcucumber.options="-Dcucumber.tags=@YourTag"
+
+  To run specific features with specific tags:
+  mvn test -Dcucumber.options="-Dcucumber.features=src/main/java/featurefiles/your_specific.feature -Dcucumber.tags=@YourTag"
+
+  To run multiple tags (e.g., @SmokeTest AND @RegressionTest):
+  mvn test -Dcucumber.options="-Dcucumber.tags=@SmokeTest -Dcucumber.tags=@RegressionTest"
+
+  To run multiple tags (e.g., @SmokeTest OR @RegressionTest):
+  mvn test -Dcucumber.options="-Dcucumber.tags=@SmokeTest,@RegressionTest"
+  -->
 </project>

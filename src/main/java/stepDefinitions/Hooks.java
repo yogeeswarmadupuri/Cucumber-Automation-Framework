@@ -1,48 +1,57 @@
 package stepDefinitions;
 
-import java.io.File;
-import java.io.IOException;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import com.cucumber.listener.Reporter;
-import com.google.common.io.Files;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import com.cucumber.listener.Reporter;
+import java.io.File;
+import java.io.IOException;
+import org.apache.commons.io.FileUtils; // Needs commons-io dependency
 
 public class Hooks {
+
+    @Before(order = 0) 
+    public void setUp() {
+        WebDriverFactory.initializeDriver();
+    }
 	
-	@Before
+	@Before(order = 1) 
 	public void beforeScenario(Scenario scenario) {
-	    Reporter.assignAuthor("Yogeeswar Madupuri");
+	    Reporter.assignAuthor("Yogeeswar Madupuri"); // Existing author assignment
 	}
 	
-	@After(order = 1)
-	public void afterScenario(Scenario scenario) {
-		if (scenario.isFailed()) {
-			String screenshotName = scenario.getName().replaceAll(" ", "_");
-			try {
-				//This takes a screenshot from the driver at save it to the specified location
-				//File sourcePath = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-				
-				//Building up the destination path for the screenshot to save
-				//Also make sure to create a folder 'screenshots' with in the cucumber-report folder
-				File destinationPath = new File(System.getProperty("user.dir") + "/target/cucumber-reports/screenshots/" + screenshotName + ".png");
-				
-				//Copy taken screenshot from source location to destination location
-				//Files.copy(sourcePath, destinationPath);   
-
-				//This attach the specified screenshot to the test
-				Reporter.addScreenCaptureFromPath(destinationPath.toString());
-			} catch (IOException e) {
-			} 
-		}
-	}
+    // This new @After hook should run before the driver quit hook
+    @After(order = 1) // Higher order means it runs earlier for @After hooks
+    public void embedScreenshotOnFailure(Scenario scenario) {
+        if (scenario.isFailed()) {
+            try {
+                WebDriver driver = WebDriverFactory.getDriver();
+                if (driver != null && driver instanceof TakesScreenshot) { // Check if driver is not null
+                    File screenshotFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+                    // Define a path to save the screenshot, e.g., target/screenshots
+                    File destinationFolder = new File("target/screenshots");
+                    if (!destinationFolder.exists()) {
+                        destinationFolder.mkdirs(); // Create folder if it doesn't exist
+                    }
+                    File destinationFile = new File(destinationFolder, scenario.getName().replaceAll("[^a-zA-Z0-9]", "_") + "_" + System.currentTimeMillis() + ".png");
+                    FileUtils.copyFile(screenshotFile, destinationFile); 
+                    Reporter.addScreenCaptureFromPath(destinationFile.getAbsolutePath(), "Screenshot on failure");
+                }
+            } catch (IOException e) {
+                System.err.println("Failed to save screenshot: " + e.getMessage());
+                e.printStackTrace();
+            } catch (Exception e) { 
+                System.err.println("An error occurred during screenshot capture: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
 	
-	
-	@After(order = 0)
-	public void AfterSteps() {
-		//testContext.getWebDriverManager().quitDriver();
+	@After(order = 0) // This will run last among @After hooks
+	public void tearDown() {
+		WebDriverFactory.quitDriver();
 	}
-
 }

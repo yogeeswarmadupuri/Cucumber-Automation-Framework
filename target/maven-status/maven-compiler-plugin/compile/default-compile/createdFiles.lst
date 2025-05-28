@@ -1,0 +1,4 @@
+configreader/ConfigFileReader.class
+stepDefinitions/DealsStepWithMapDefinition.class
+testRunner/TestRunner.class
+stepDefinitions/Hooks.class

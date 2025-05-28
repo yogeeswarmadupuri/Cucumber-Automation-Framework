@@ -1,0 +1,9 @@
+/app/src/main/java/stepDefinitions/DealsStepWithMapDefinition.java
+/app/src/main/java/stepDefinitions/LoginStepDefinition.java
+/app/src/main/java/testRunner/TestRunner.java
+/app/src/main/java/configreader/ConfigFileReader.java
+/app/src/main/java/stepDefinitions/Hooks.java
+/app/src/main/java/stepDefinitions/Hooks_StepDefinition.java
+/app/src/main/java/stepDefinitions/DealStepDefnition.java
+/app/src/main/java/stepDefinitions/TaggedHooksStepDefinition.java
+/app/src/main/java/stepDefinitions/TaggingStepDefinition.java

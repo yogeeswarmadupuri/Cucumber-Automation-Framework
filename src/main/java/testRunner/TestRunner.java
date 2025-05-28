@@ -13,14 +13,13 @@ import cucumber.api.junit.Cucumber;
 
 	@RunWith(Cucumber.class)
 	@CucumberOptions(
-			features = "C:\\Users\\yogeeswar\\workspace\\CucumberAutomation\\src\\main\\java\\featurefiles\\dealsmap.feature", //the path of the feature files
+			features = "src/main/java/featurefiles", //the path of the feature files
 			glue={"stepDefinitions"}, //the path of the step definition files
 			format= {"pretty","html:test-outout", "json:json_output/cucumber.json", "junit:junit_xml/cucumber.xml"}, //to generate different types of reporting
 			plugin = { "com.cucumber.listener.ExtentCucumberFormatter:"},
 			monochrome = true, //display the console output in a proper readable format
 			strict = true, //it will check if any step is not defined in step definition file
 			dryRun = false //to check the mapping is proper between feature file and step def file
-			//tags = {"~@SmokeTest" , "~@RegressionTest", "~@End2End"}			
 			)
 	 
 	public class TestRunner {
@@ -35,7 +34,8 @@ import cucumber.api.junit.Cucumber;
 		}
 		@AfterClass
 		public static void writeExtentReport() {
-			Reporter.loadXMLConfig(new File(new ConfigFileReader().getReportConfigPath()));
+			ConfigFileReader configFileReader = new ConfigFileReader();
+			Reporter.loadXMLConfig(new File(configFileReader.getExtentConfigPath()));
 			Reporter.assignAuthor("Yogeeswar Madupuri");
 			Reporter.setSystemInfo("User Name", System.getProperty("user.name"));
 		    Reporter.setSystemInfo("Time Zone", System.getProperty("user.timezone"));
